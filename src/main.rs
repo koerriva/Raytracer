@@ -18,7 +18,7 @@ pub const ASPECT_RATIO:Float = 16.0/9.0;
 pub const IMAGE_WIDTH:i32 = 640;
 pub const IMAGE_HEIGHT:i32 = (IMAGE_WIDTH as Float / ASPECT_RATIO) as i32;
 pub const BUFFER_SIZE:usize = (IMAGE_WIDTH * IMAGE_HEIGHT * 3) as usize;
-pub const NS:i32 = 100;
+pub const NS:i32 = 10;
 
 fn main() {
 	let mut scene = HittableList::new();
@@ -37,9 +37,11 @@ fn main() {
 
 	let scene = scene;
 
-	let camera = Camera::new(2.0,1.0);
+	let camera = Camera::new(120.0,ASPECT_RATIO,1.0);
 
 	let mut frame = Frame::new(IMAGE_WIDTH, IMAGE_HEIGHT);
+
+	println!("Begin ..");
 	&frame.buffer.par_iter_mut().for_each(|pixel:&mut Pixel|{
 		let x = pixel.x;
 		let y = pixel.y;

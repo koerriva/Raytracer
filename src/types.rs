@@ -3,6 +3,7 @@ use crate::vector::Vec3;
 use crate::material::Material;
 use crate::ray::{Hittable, Ray, HitRecord};
 use std::sync::Arc;
+use std::f64::consts::PI;
 
 pub type Float = f64;
 
@@ -134,15 +135,20 @@ pub struct Camera {
 }
 
 impl Camera {
-	pub fn new(height:Float,focal_length:Float)->Self{
-		let viewport = (height*(16.0/9.0),height);
+	pub fn new(fov:Float,aspect:Float,focal_length:Float)->Self{
+		let theta = fov*PI/180.0;//角度换弧度
+		let half_height = (theta/2.0).tan();
+		let half_width = half_height * aspect;
+
+		let width = half_width*2.0;
+		let height = half_height*2.0;
+		let viewport = (width,height);
 
 		let horizontal = vec3!(viewport.0,0.0,0.0);
 		let vertical = vec3!(0.0,viewport.1,0.0);
 		let origin = vec3!(0);
-		let lower_left_corner = origin - horizontal/vec3!(2) - vertical/vec3!(2) - vec3!(0,0,focal_length);
+		let lower_left_corner = vec3!(-half_width,-half_height,-focal_length);
 
-		println!("left corner {}",lower_left_corner);
 		Camera{origin,lower_left_corner,horizontal,vertical,viewport}
 	}
 
