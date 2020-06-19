@@ -135,7 +135,13 @@ pub struct Camera {
 }
 
 impl Camera {
-	pub fn new(fov:Float,aspect:Float,focal_length:Float)->Self{
+	pub fn new(lookfrom:Vec3,lookat:Vec3,up:Vec3,fov:Float,aspect:Float,focal_length:Float)->Self{
+		let mut u;let mut v;let mut w;
+
+		w = (lookfrom-lookat).make_unit_vector();
+		u = up.cross(w).make_unit_vector();
+		v = w.cross(u);
+
 		let theta = fov*PI/180.0;//角度换弧度
 		let half_height = (theta/2.0).tan();
 		let half_width = half_height * aspect;
@@ -144,16 +150,17 @@ impl Camera {
 		let height = half_height*2.0;
 		let viewport = (width,height);
 
-		let horizontal = vec3!(viewport.0,0.0,0.0);
-		let vertical = vec3!(0.0,viewport.1,0.0);
-		let origin = vec3!(0);
-		let lower_left_corner = vec3!(-half_width,-half_height,-focal_length);
+		let origin = lookfrom;
+		let horizontal = u*vec3!(2.0*half_width);
+		let vertical = v*vec3!(2.0*half_height);
+		// let lower_left_corner = vec3!(-half_width,-half_height,-focal_length);
+		let lower_left_corner = origin - u*vec3!(half_width) - v*vec3!(half_height) - w;
 
 		Camera{origin,lower_left_corner,horizontal,vertical,viewport}
 	}
 
-	pub fn get_ray(&self,u:Float,v:Float)->Ray{
-		Ray::from(self.origin,self.lower_left_corner+self.horizontal*vec3!(u)+self.vertical*vec3!(v)-self.origin)
+	pub fn get_ray(&self,s:Float,t:Float)->Ray{
+		Ray::from(self.origin,self.lower_left_corner+self.horizontal*vec3!(s)+self.vertical*vec3!(t)-self.origin)
 	}
 }
 

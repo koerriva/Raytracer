@@ -37,7 +37,7 @@ fn main() {
 
 	let scene = scene;
 
-	let camera = Camera::new(120.0,ASPECT_RATIO,1.0);
+	let camera = Camera::new(vec3!(-2,2,1),vec3!(0,0,-1),vec3!(0,1,0),45.0,ASPECT_RATIO,1.0);
 
 	let mut frame = Frame::new(IMAGE_WIDTH, IMAGE_HEIGHT);
 
@@ -66,5 +66,5 @@ fn main() {
 	let buffer = frame.get_raw_buffer();
 
 	println!("Done.");
-	image::save_buffer("images/10-1.png", &buffer, IMAGE_WIDTH as u32, IMAGE_HEIGHT as u32, ColorType::Rgb8).unwrap()
+	image::save_buffer("images/10-3.png", &buffer, IMAGE_WIDTH as u32, IMAGE_HEIGHT as u32, ColorType::Rgb8).unwrap()
 }
