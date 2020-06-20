@@ -40,7 +40,7 @@ fn main() {
 	let lookfrom = vec3!(-2,2,1);//vec3!(3,3,2);
 	let lookat = vec3!(0,0,-1);//vec3!(0,0,-1);
 	let focus_dist = (lookfrom-lookat).length();
-	let camera = Camera::new(lookfrom,lookat,vec3!(0,1,0),45.0,ASPECT_RATIO,1.0,focus_dist);
+	let camera = Camera::new(lookfrom,lookat,vec3!(0,1,0),45.0,ASPECT_RATIO,4.0,focus_dist);
 
 	let mut frame = Frame::new(IMAGE_WIDTH, IMAGE_HEIGHT);
 
@@ -69,5 +69,5 @@ fn main() {
 	let buffer = frame.get_raw_buffer();
 
 	println!("Done.");
-	image::save_buffer("images/11-1.png", &buffer, IMAGE_WIDTH as u32, IMAGE_HEIGHT as u32, ColorType::Rgb8).unwrap()
+	image::save_buffer("images/11-2.png", &buffer, IMAGE_WIDTH as u32, IMAGE_HEIGHT as u32, ColorType::Rgb8).unwrap()
 }
