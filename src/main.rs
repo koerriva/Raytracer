@@ -71,12 +71,15 @@ fn main() {
 				let b = b-11;
 				let choose_mat = drand48();
 				let center = vec3!(a as Float+0.9*drand48(),0.2,b as Float+0.9*drand48());
-				if choose_mat < 0.8 {
+				if choose_mat < 0.4 {
 					scene.add(sphere!(center,0.2,lambertian!(drand48()*drand48(),drand48()*drand48(),drand48()*drand48())))
-				}else if choose_mat < 0.95 {
+				}else if choose_mat < 0.65 {
 					scene.add(sphere!(center,0.2,metal!(0.5*(1.0+drand48()),0.5*(1.0+drand48()),0.5*(1.0+drand48()),0.5*drand48())))
-				}else {
+				}else if choose_mat < 0.85 {
 					scene.add(sphere!(center,0.2,dielectric!(1.5)))
+				}else {
+					//钻石
+					scene.add(sphere!(center,0.4,dielectric!(2.7)))
 				}
 			}
 		}
@@ -124,5 +127,5 @@ fn main() {
 	let buffer = frame.get_raw_buffer();
 
 	println!("Done.");
-	image::save_buffer("images/12-1.png", &buffer, IMAGE_WIDTH as u32, IMAGE_HEIGHT as u32, ColorType::Rgb8).unwrap()
+	image::save_buffer("images/12-2.png", &buffer, IMAGE_WIDTH as u32, IMAGE_HEIGHT as u32, ColorType::Rgb8).unwrap()
 }
