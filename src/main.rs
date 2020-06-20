@@ -66,5 +66,5 @@ fn main() {
 	let buffer = frame.get_raw_buffer();
 
 	println!("Done.");
-	image::save_buffer("images/10-3.png", &buffer, IMAGE_WIDTH as u32, IMAGE_HEIGHT as u32, ColorType::Rgb8).unwrap()
+	image::save_buffer("images/10-4.png", &buffer, IMAGE_WIDTH as u32, IMAGE_HEIGHT as u32, ColorType::Rgb8).unwrap()
 }

@@ -5,7 +5,7 @@ use crate::ray::{Hittable, Ray, HitRecord};
 use std::sync::Arc;
 use std::f64::consts::PI;
 
-pub type Float = f64;
+pub type Float = f32;
 
 pub fn drand48()->Float{
 	return rand::thread_rng().gen()
@@ -142,7 +142,7 @@ impl Camera {
 		u = up.cross(w).make_unit_vector();
 		v = w.cross(u);
 
-		let theta = fov*PI/180.0;//角度换弧度
+		let theta = fov* PI as f32 /180.0;//角度换弧度
 		let half_height = (theta/2.0).tan();
 		let half_width = half_height * aspect;
 
