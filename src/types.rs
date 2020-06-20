@@ -20,10 +20,13 @@ pub fn random_in_unit_sphere() ->Vec3{
 	p
 }
 
+//反射
 pub fn reflect(v:Vec3,n:Vec3)->Vec3{
 	v-vec3!(v.dot(n)*2.0)*n
 }
 
+
+//折射
 pub fn refract(v:Vec3,n:Vec3,ni_over_nt:Float,refracted:&mut Vec3)->bool{
 	let uv = v.make_unit_vector();
 	let dt = uv.dot(n);
@@ -36,11 +39,22 @@ pub fn refract(v:Vec3,n:Vec3,ni_over_nt:Float,refracted:&mut Vec3)->bool{
 	}
 }
 
+//折射率逼近法
 pub fn schlick(cosine:Float,ref_idx:Float)->Float{
 	let r0 = (1.0-ref_idx)/(1.0+ref_idx);
 	let r0 = r0*r0;
 
 	r0 + (1.0-r0)*(1.0-cosine).powf(5.0)
+}
+
+//散焦盘
+pub fn random_in_unit_disk()->Vec3{
+	let mut p=vec3!(0);
+	loop {
+		p = vec3!(drand48(),drand48(),0.0) - vec3!(1,1,0);
+		if p.dot(p) < 1.0 { break;}
+	}
+	p
 }
 
 pub struct Sphere {
@@ -131,11 +145,15 @@ pub struct Camera {
 	pub lower_left_corner:Vec3,
 	pub horizontal:Vec3,
 	pub vertical:Vec3,
-	viewport:(Float,Float)
+	viewport:(Float,Float),
+	w:Vec3,u:Vec3,v:Vec3,
+	pub lens_radius:Float,
 }
 
 impl Camera {
-	pub fn new(lookfrom:Vec3,lookat:Vec3,up:Vec3,fov:Float,aspect:Float,focal_length:Float)->Self{
+	pub fn new(lookfrom:Vec3,lookat:Vec3,up:Vec3,fov:Float,aspect:Float,aperture:Float,focus_dist:Float)->Self{
+		let lens_radius = aperture / 2.0;
+
 		let mut u;let mut v;let mut w;
 
 		w = (lookfrom-lookat).make_unit_vector();
@@ -151,16 +169,18 @@ impl Camera {
 		let viewport = (width,height);
 
 		let origin = lookfrom;
-		let horizontal = u*vec3!(2.0*half_width);
-		let vertical = v*vec3!(2.0*half_height);
-		// let lower_left_corner = vec3!(-half_width,-half_height,-focal_length);
-		let lower_left_corner = origin - u*vec3!(half_width) - v*vec3!(half_height) - w;
+		let horizontal = u*vec3!(2.0*half_width*focus_dist);
+		let vertical = v*vec3!(2.0*half_height*focus_dist);
 
-		Camera{origin,lower_left_corner,horizontal,vertical,viewport}
+		let lower_left_corner = origin - u*vec3!(half_width*focus_dist) - v*vec3!(half_height*focus_dist) - w*vec3!(focus_dist);
+
+		Camera{origin,lower_left_corner,horizontal,vertical,viewport,w,u,v,lens_radius}
 	}
 
 	pub fn get_ray(&self,s:Float,t:Float)->Ray{
-		Ray::from(self.origin,self.lower_left_corner+self.horizontal*vec3!(s)+self.vertical*vec3!(t)-self.origin)
+		let rd = vec3!(self.lens_radius) * random_in_unit_disk();
+		let offset = self.u * vec3!(rd.x()) + self.v * vec3!(rd.y());
+		Ray::from(self.origin+offset,self.lower_left_corner+self.horizontal*vec3!(s)+self.vertical*vec3!(t)-self.origin-offset)
 	}
 }
 
