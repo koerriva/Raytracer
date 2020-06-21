@@ -42,7 +42,7 @@ impl Ray {
         if obj.hit(self,0.001,Float::MAX,&mut rec){
             let mut scattered = Ray::new();
             let mut attenuation = vec3!();
-            if rec.material.scatter(self,&rec,&mut attenuation,&mut scattered) && depth < 50{
+            if rec.material.scatter(self,&rec,&mut attenuation,&mut scattered) && depth < 1000{
                 scattered.color(obj,depth+1)*attenuation
             }else {
                 vec3!(0)

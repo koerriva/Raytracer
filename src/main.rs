@@ -15,10 +15,10 @@ use std::time::Duration;
 use std::sync::mpsc::{channel, Sender, Receiver};
 
 pub const ASPECT_RATIO:Float = 16.0/9.0;
-pub const IMAGE_WIDTH:i32 = 1280;
+pub const IMAGE_WIDTH:i32 = 1920;
 pub const IMAGE_HEIGHT:i32 = (IMAGE_WIDTH as Float / ASPECT_RATIO) as i32;
 pub const BUFFER_SIZE:usize = (IMAGE_WIDTH * IMAGE_HEIGHT * 3) as usize;
-pub const NS:i32 = 100;
+pub const NS:i32 = 200;
 
 macro_rules! lambertian {
 	($r:expr,$g:expr,$b:expr) => {
@@ -127,5 +127,5 @@ fn main() {
 	let buffer = frame.get_raw_buffer();
 
 	println!("Done.");
-	image::save_buffer("images/12-2.png", &buffer, IMAGE_WIDTH as u32, IMAGE_HEIGHT as u32, ColorType::Rgb8).unwrap()
+	image::save_buffer("images/12-6.png", &buffer, IMAGE_WIDTH as u32, IMAGE_HEIGHT as u32, ColorType::Rgb8).unwrap()
 }
