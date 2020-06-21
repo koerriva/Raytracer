@@ -11,11 +11,11 @@ use image::ColorType;
 use rayon::prelude::*;
 use std::sync::{Arc, Mutex};
 use std::thread::{sleep, spawn, Thread};
-use std::time::Duration;
+use std::time::{Duration, SystemTime};
 use std::sync::mpsc::{channel, Sender, Receiver};
 
 pub const ASPECT_RATIO:Float = 16.0/9.0;
-pub const IMAGE_WIDTH:i32 = 1920;
+pub const IMAGE_WIDTH:i32 = 1280;
 pub const IMAGE_HEIGHT:i32 = (IMAGE_WIDTH as Float / ASPECT_RATIO) as i32;
 pub const BUFFER_SIZE:usize = (IMAGE_WIDTH * IMAGE_HEIGHT * 3) as usize;
 pub const NS:i32 = 200;
@@ -70,16 +70,16 @@ fn main() {
 				let a = a-11;
 				let b = b-11;
 				let choose_mat = drand48();
-				let center = vec3!(a as Float+0.9*drand48(),0.2,b as Float+0.9*drand48());
+				let center = vec3!(a as Float+0.99*drand48(),0.2,b as Float+0.99*drand48());
 				if choose_mat < 0.4 {
 					scene.add(sphere!(center,0.2,lambertian!(drand48()*drand48(),drand48()*drand48(),drand48()*drand48())))
 				}else if choose_mat < 0.65 {
 					scene.add(sphere!(center,0.2,metal!(0.5*(1.0+drand48()),0.5*(1.0+drand48()),0.5*(1.0+drand48()),0.5*drand48())))
-				}else if choose_mat < 0.85 {
+				}else if choose_mat < 0.90 {
 					scene.add(sphere!(center,0.2,dielectric!(1.5)))
 				}else {
 					//钻石
-					scene.add(sphere!(center,0.4,dielectric!(2.7)))
+					scene.add(sphere!(center+vec3!(0.0,0.2,0.0),0.4,dielectric!(2.4)));
 				}
 			}
 		}
@@ -102,7 +102,9 @@ fn main() {
 
 	let mut frame = Frame::new(IMAGE_WIDTH, IMAGE_HEIGHT);
 
-	println!("Begin ..");
+	let start_time = SystemTime::now();
+
+	println!("Begin .. {:?}",start_time);
 	&frame.buffer.par_iter_mut().for_each(|pixel:&mut Pixel|{
 		let x = pixel.x;
 		let y = pixel.y;
@@ -123,9 +125,9 @@ fn main() {
 		pixel.color = col;
 	});
 
+	let end_time = SystemTime::now();
+	println!("Done. {:?},Total {}",end_time,end_time.duration_since(start_time).unwrap().as_secs());
 
 	let buffer = frame.get_raw_buffer();
-
-	println!("Done.");
-	image::save_buffer("images/12-6.png", &buffer, IMAGE_WIDTH as u32, IMAGE_HEIGHT as u32, ColorType::Rgb8).unwrap()
+	image::save_buffer("images/12-7.png", &buffer, IMAGE_WIDTH as u32, IMAGE_HEIGHT as u32, ColorType::Rgb8).unwrap()
 }

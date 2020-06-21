@@ -64,7 +64,12 @@ impl Material for Dielectric{
         let mut outward_normal = vec3!(0);
         let reflected = reflect(ray_in.direction(),rec.normal);
         let mut ni_over_nt = 0.0;
-        *attenuation = vec3!(1.0,1.0,1.0);
+        if self.ref_idx>2.0 {
+            *attenuation = vec3!(0.8,0.0,0.501);
+        }else {
+            *attenuation = vec3!(1.0,1.0,1.0);
+        }
+
         let mut refracted = vec3!(0);
         let mut reflect_prod:Float = 0.0;
         let mut cosine:Float = 0.0;
